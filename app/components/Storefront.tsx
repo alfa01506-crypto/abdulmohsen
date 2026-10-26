@@ -465,6 +465,12 @@ export default function Storefront({ mode }: { mode: StorefrontMode }) {
             >
               {mode === "retail" ? "Wholesale" : "Retail"}
             </Link>
+            <Link
+              href="/track-order"
+              className="hidden text-sm font-medium text-[#44564a] no-underline hover:text-[#174333] sm:block"
+            >
+              Track order
+            </Link>
             <a
               href="#catalogue"
               className="hidden text-sm font-medium text-[#44564a] no-underline hover:text-[#174333] sm:block"
@@ -768,16 +774,25 @@ export default function Storefront({ mode }: { mode: StorefrontMode }) {
                     ? <>Order <strong>#{orderComplete}</strong> is paid. Our team will confirm fulfilment details by phone.</>
                     : <>Your request <strong>#{orderComplete}</strong> has been sent to our team. We’ll confirm availability and next steps by phone.</>}
                 </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOrderComplete("");
-                    setCartOpen(false);
-                  }}
-                  className="mt-7 h-11 rounded-md bg-[#174333] px-4 text-sm font-semibold text-white hover:bg-[#235b46]"
-                >
-                  Continue browsing
-                </button>
+                <div className="mt-7 flex flex-wrap gap-3">
+                  <Link
+                    href={`/track-order?orderId=${encodeURIComponent(orderComplete)}`}
+                    onClick={() => setCartOpen(false)}
+                    className="inline-flex h-11 items-center justify-center rounded-md bg-[#174333] px-4 text-sm font-semibold text-white no-underline hover:bg-[#235b46]"
+                  >
+                    Track this order
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOrderComplete("");
+                      setCartOpen(false);
+                    }}
+                    className="h-11 rounded-md border border-[#d3ddd4] px-4 text-sm font-semibold text-[#44564a] hover:bg-[#f5f7f2]"
+                  >
+                    Continue browsing
+                  </button>
+                </div>
               </div>
             ) : pendingPayment ? (
               <div className="flex-1 overflow-y-auto px-5 py-6">
@@ -1042,14 +1057,19 @@ export default function Storefront({ mode }: { mode: StorefrontMode }) {
           <Link href="/" className="text-[#68776d] no-underline hover:text-[#174333]">
             Abdul Mohsen Stationery Mart · Saudi Arabia
           </Link>
-          <a
-            href={`https://wa.me/966591767600?text=${encodeURIComponent(`Hello, I have a question about ${mode} stationery.`)}`}
-            target="_blank"
-            rel="noreferrer"
-            className="font-semibold text-[#174333] no-underline hover:underline"
-          >
-            Chat with us on WhatsApp <span aria-hidden="true">→</span>
-          </a>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <Link href="/track-order" className="font-semibold text-[#174333] no-underline hover:underline">
+              Track an order <span aria-hidden="true">→</span>
+            </Link>
+            <a
+              href={`https://wa.me/966591767600?text=${encodeURIComponent(`Hello, I have a question about ${mode} stationery.`)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold text-[#174333] no-underline hover:underline"
+            >
+              Chat with us on WhatsApp <span aria-hidden="true">→</span>
+            </a>
+          </div>
         </div>
       </footer>
       <ChatBot />

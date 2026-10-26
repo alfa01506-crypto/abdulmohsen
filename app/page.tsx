@@ -107,14 +107,19 @@ export default function HomePage() {
       <footer className="border-t border-[#d5dfd5] bg-white">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-6 pr-16 text-sm sm:px-8 sm:pr-24">
           <p className="text-[#68776d]">Abdul Mohsen Stationery Mart · Saudi Arabia</p>
-          <a
-            href="https://wa.me/966591767600?text=Hello%2C%20I%20have%20a%20question%20about%20your%20stationery%20products."
-            target="_blank"
-            rel="noreferrer"
-            className="font-semibold text-[#174333] no-underline hover:underline"
-          >
-            Questions? Chat with us on WhatsApp <span aria-hidden="true">→</span>
-          </a>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <Link href="/track-order" className="font-semibold text-[#174333] no-underline hover:underline">
+              Track an order <span aria-hidden="true">→</span>
+            </Link>
+            <a
+              href="https://wa.me/966591767600?text=Hello%2C%20I%20have%20a%20question%20about%20your%20stationery%20products."
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold text-[#174333] no-underline hover:underline"
+            >
+              Questions? Chat with us on WhatsApp <span aria-hidden="true">→</span>
+            </a>
+          </div>
         </div>
       </footer>
       <ChatBot />

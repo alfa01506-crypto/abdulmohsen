@@ -21,6 +21,8 @@ alter table public.orders
 grant select on public.products to anon, authenticated;
 alter table public.products enable row level security;
 
+drop policy if exists "Public can read active products" on public.products;
+drop policy if exists "Admins can update products" on public.products;
 drop policy if exists products_catalogue_read on public.products;
 create policy products_catalogue_read
   on public.products

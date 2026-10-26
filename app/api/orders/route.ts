@@ -153,6 +153,17 @@ export async function POST(request: Request) {
       );
     }
 
+    if (error.code === "23514" && error.message?.includes("orders_payment_status_check")) {
+      console.error(`Legacy payment status check rejected checkout [${error.code}]: ${error.message}`);
+      return Response.json(
+        {
+          error:
+            "Supabase has an outdated payment-status rule. Rerun 20261027000004_order_compatibility.sql in SQL Editor, then retry.",
+        },
+        { status: 503 }
+      );
+    }
+
     console.error(
       `Store order creation failed [${error.code ?? "unknown"}]: ${error.message}`
     );
