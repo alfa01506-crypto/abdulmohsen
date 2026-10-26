@@ -1,216 +1,123 @@
-
-"use client";
-
-import { useEffect, useState } from "react";
-import { createClient } from "@/utils/supabase/client";
-
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-  stock: number;
-  description?: string | null;
-};
+import Link from "next/link";
+import ChatBot from "./components/ChatBot";
 
 export default function HomePage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [cart, setCart] = useState<Product[]>([]);
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    async function loadProducts() {
-      const supabase = createClient();
-
-      const { data, error } = await supabase
-        .from("products")
-        .select("id, name, price, stock, description")
-        .order("name");
-
-      if (error) {
-        setMessage("Products load cheyyan kazhinjilla. Database check cheyyuka.");
-      } else {
-        setProducts((data ?? []) as Product[]);
-      }
-
-      setLoading(false);
-    }
-
-    loadProducts();
-  }, []);
-
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(search.toLowerCase())
-  );
-
-  function addToCart(product: Product) {
-    if (product.stock <= 0) {
-      setMessage("Ee product ippol stock-il illa.");
-      return;
-    }
-
-    setCart((current) => [...current, product]);
-    setMessage(`${product.name} cart-il add cheythu.`);
-  }
-
-  function orderOnWhatsApp() {
-    if (cart.length === 0) {
-      setMessage("Aadyam products cart-il add cheyyuka.");
-      return;
-    }
-
-    const items = cart
-      .map((product) => `${product.name} - SAR ${product.price}`)
-      .join("\n");
-
-    const total = cart.reduce(
-      (sum, product) => sum + Number(product.price),
-      0
-    );
-
-    const text = `Assalamu Alaikum, Abdul Mohsen Wholesale Bookstore-il order cheyyan agrahikkunnu:\n\n${items}\n\nTotal: SAR ${total}`;
-
-    window.open(
-      `https://wa.me/966591767600?text=${encodeURIComponent(text)}`,
-      "_blank"
-    );
-  }
-
   return (
-    <main className="min-h-screen bg-neutral-950 text-white">
-      <header className="border-b border-yellow-700/40 px-5 py-6">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="text-sm uppercase tracking-[0.25em] text-yellow-500">
-              Abdul Mohsen
-            </p>
-            <h1 className="mt-1 text-2xl font-bold sm:text-3xl">
-              Wholesale Bookstore
-            </h1>
-            <p className="mt-2 text-sm text-neutral-400">
-              Books and stationery for retail and wholesale
-            </p>
-          </div>
-
-          <div className="rounded-xl border border-yellow-600/40 px-4 py-3">
-            <p className="text-sm text-neutral-400">Cart items</p>
-            <p className="text-xl font-bold text-yellow-400">
-              {cart.length}
-            </p>
-          </div>
+    <main className="min-h-screen bg-[#f4f2e9] text-[#172b24]">
+      <header className="absolute inset-x-0 top-0 z-10 border-b border-white/20 text-white">
+        <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-4 sm:px-8">
+          <Link href="/" className="flex items-center gap-3 no-underline">
+            <span className="grid size-11 place-items-center rounded-sm border border-white/45 font-serif text-xs font-bold">
+              AM
+            </span>
+            <span>
+              <span className="block font-serif text-lg font-semibold leading-tight">
+                Abdul Mohsen
+              </span>
+              <span className="block text-[10px] font-semibold uppercase">
+                Stationery Mart · Saudi Arabia
+              </span>
+            </span>
+          </Link>
+          <Link
+            href="/admin"
+            className="text-sm font-medium text-white/85 no-underline hover:text-white"
+          >
+            Staff login
+          </Link>
         </div>
       </header>
 
-      <section className="mx-auto max-w-6xl px-5 py-10">
-        <div className="mb-8 rounded-2xl border border-yellow-700/30 bg-neutral-900 p-6 sm:p-10">
-          <p className="text-sm font-semibold uppercase tracking-widest text-yellow-500">
-            Welcome to our store
+      <section className="relative flex min-h-[64vh] items-end overflow-hidden bg-[#18251d] px-4 pb-10 pt-28 text-white sm:min-h-[70vh] sm:px-8 sm:pb-14">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=2200&q=85')",
+          }}
+        />
+        <div aria-hidden="true" className="absolute inset-0 bg-[#10271d]/65" />
+        <div className="relative mx-auto w-full max-w-7xl">
+          <p className="text-xs font-semibold uppercase text-[#d9ef73]">
+            Stationery for home, school &amp; business
           </p>
-          <h2 className="mt-3 max-w-2xl text-3xl font-bold sm:text-5xl">
-            Books and supplies for every need.
-          </h2>
-          <p className="mt-4 max-w-xl text-neutral-400">
-            Browse our available products and contact us on WhatsApp to place
-            your order.
+          <h1 className="mt-4 max-w-3xl font-serif text-4xl font-semibold leading-tight sm:text-6xl">
+            The right supplies for every desk.
+          </h1>
+          <p className="mt-4 max-w-xl text-sm leading-6 text-white/80 sm:text-base">
+            Shop everyday essentials, school supplies, and wholesale stationery from Abdul Mohsen in Saudi Arabia.
           </p>
-        </div>
-
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <h2 className="text-2xl font-bold">Our Products</h2>
-          <input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search products..."
-            className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-4 py-3 text-white outline-none focus:border-yellow-500 sm:w-72"
-          />
-        </div>
-
-        {message && (
-          <p className="mb-5 rounded-lg border border-yellow-700/40 bg-neutral-900 p-3 text-sm text-yellow-300">
-            {message}
-          </p>
-        )}
-
-        {loading ? (
-          <p className="py-10 text-neutral-400">Loading products...</p>
-        ) : filteredProducts.length === 0 ? (
-          <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-8 text-center">
-            <h3 className="text-lg font-semibold">No products to display</h3>
-            <p className="mt-2 text-neutral-400">
-              Products admin panel-il add cheythal ivide kaanam.
-            </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link
+              href="/retail"
+              className="inline-flex h-12 items-center justify-center rounded-sm bg-[#d9ef73] px-5 text-sm font-semibold text-[#172b24] no-underline transition hover:bg-[#e4f69b]"
+            >
+              Shop retail <span aria-hidden="true" className="ml-3">→</span>
+            </Link>
+            <Link
+              href="/wholesale"
+              className="inline-flex h-12 items-center justify-center rounded-sm border border-white/60 px-5 text-sm font-semibold text-white no-underline transition hover:bg-white/10"
+            >
+                Shop wholesale <span aria-hidden="true" className="ml-3">→</span>
+            </Link>
           </div>
-        ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredProducts.map((product) => (
-              <article
-                key={product.id}
-                className="rounded-xl border border-neutral-800 bg-neutral-900 p-5"
-              >
-                <div className="mb-4 flex h-32 items-center justify-center rounded-lg bg-neutral-800 text-5xl">
-                  📚
-                </div>
-
-                <h3 className="text-lg font-bold">{product.name}</h3>
-
-                {product.description && (
-                  <p className="mt-2 text-sm text-neutral-400">
-                    {product.description}
-                  </p>
-                )}
-
-                <p className="mt-4 text-xl font-bold text-yellow-400">
-                  SAR {Number(product.price).toFixed(2)}
-                </p>
-
-                <p className="mt-1 text-sm text-neutral-400">
-                  {product.stock > 0
-                    ? `Stock: ${product.stock}`
-                    : "Out of stock"}
-                </p>
-
-                <button
-                  onClick={() => addToCart(product)}
-                  disabled={product.stock <= 0}
-                  className="mt-5 w-full rounded-lg bg-yellow-500 px-4 py-3 font-semibold text-black hover:bg-yellow-400 disabled:cursor-not-allowed disabled:bg-neutral-700 disabled:text-neutral-400"
-                >
-                  Add to Cart
-                </button>
-              </article>
-            ))}
-          </div>
-        )}
-
-        <div className="mt-10 rounded-xl border border-neutral-800 bg-neutral-900 p-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-bold">Your Cart</h2>
-              <p className="mt-1 text-sm text-neutral-400">
-                {cart.length} item(s) selected
-              </p>
-            </div>
-            <p className="text-xl font-bold text-yellow-400">
-              SAR{" "}
-              {cart
-                .reduce((sum, product) => sum + Number(product.price), 0)
-                .toFixed(2)}
-            </p>
-          </div>
-
-          <button
-            onClick={orderOnWhatsApp}
-            className="mt-5 w-full rounded-lg bg-green-600 px-5 py-3 font-bold text-white hover:bg-green-500 sm:w-auto"
-          >
-            Order via WhatsApp
-          </button>
         </div>
       </section>
 
-      <footer className="border-t border-neutral-800 px-5 py-6 text-center text-sm text-neutral-500">
-        © 2026 Abdul Mohsen Wholesale Bookstore
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-8 sm:py-14">
+        <div className="flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <p className="text-xs font-semibold uppercase text-[#64702f]">Choose your store</p>
+            <h2 className="mt-2 font-serif text-3xl font-semibold">One stationery catalogue. Two ways to shop.</h2>
+          </div>
+          <p className="max-w-md text-sm leading-6 text-[#637167]">
+            Choose retail for individual purchases or wholesale pricing for your shop and business.
+          </p>
+        </div>
+
+        <div className="mt-7 grid border-y border-[#d5dfd5] md:grid-cols-2">
+          <article className="flex min-h-48 flex-col items-start justify-between border-b border-[#d5dfd5] py-6 md:border-b-0 md:border-r md:pr-8">
+            <div>
+              <p className="text-xs font-semibold uppercase text-[#54725d]">For shops &amp; resellers</p>
+              <h3 className="mt-2 font-serif text-2xl font-semibold">Wholesale</h3>
+              <p className="mt-2 max-w-md text-sm leading-6 text-[#637167]">
+                Bulk stationery, business pricing, and minimum order quantities.
+              </p>
+            </div>
+            <Link href="/wholesale" className="mt-5 text-sm font-semibold text-[#174333] no-underline hover:underline">
+              Explore wholesale <span aria-hidden="true">→</span>
+            </Link>
+          </article>
+
+          <article className="flex min-h-48 flex-col items-start justify-between py-6 md:pl-8">
+            <div>
+              <p className="text-xs font-semibold uppercase text-[#64702f]">For individual shoppers</p>
+              <h3 className="mt-2 font-serif text-2xl font-semibold">Retail</h3>
+              <p className="mt-2 max-w-md text-sm leading-6 text-[#637167]">
+                Shop stationery by the piece with delivery or pickup options.
+              </p>
+            </div>
+            <Link href="/retail" className="mt-5 text-sm font-semibold text-[#174333] no-underline hover:underline">
+              Browse the catalogue <span aria-hidden="true">→</span>
+            </Link>
+          </article>
+        </div>
+      </section>
+      <footer className="border-t border-[#d5dfd5] bg-white">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-6 pr-16 text-sm sm:px-8 sm:pr-24">
+          <p className="text-[#68776d]">Abdul Mohsen Stationery Mart · Saudi Arabia</p>
+          <a
+            href="https://wa.me/966591767600?text=Hello%2C%20I%20have%20a%20question%20about%20your%20stationery%20products."
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold text-[#174333] no-underline hover:underline"
+          >
+            Questions? Chat with us on WhatsApp <span aria-hidden="true">→</span>
+          </a>
+        </div>
       </footer>
+      <ChatBot />
     </main>
   );
 }
-

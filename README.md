@@ -1,5 +1,13 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Wholesale Store Setup
+
+The public catalogue and guest order requests require five Supabase migrations, in filename order: `supabase/migrations/20261026000000_wholesale_orders.sql`, `supabase/migrations/20261027000000_order_fulfillment.sql`, `supabase/migrations/20261027000002_moyasar_payments.sql`, `supabase/migrations/20261027000003_store_channels.sql`, then `supabase/migrations/20261027000004_order_compatibility.sql`. Run them in the Supabase SQL Editor before using the storefront. They add catalogue fields and access policies, secure order/payment functions, admin status updates, stock reservation/restoration, home-delivery/store-pickup selection, and server-validated channel-specific pricing. The later migrations also make pickup address fields optional, normalize placeholder categories, and remove an older payment-method constraint that can reject checkout.
+
+The migrations expect the existing `products`, `orders`, and `admin_users` tables used by the admin pages. Product images can be set with a public image URL in product management. The root page links to `/wholesale` and `/retail`; checkout can create an order request and optionally use Moyasar when its keys are configured. Staff confirm fulfilment. No refund workflow is configured.
+
+Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `OPENAI_API_KEY` in `.env.local`. To enable Moyasar card payments, also set `NEXT_PUBLIC_MOYASAR_PUBLISHABLE_KEY`, `MOYASAR_SECRET_KEY`, and the server-only `SUPABASE_SERVICE_ROLE_KEY`. Use Moyasar test keys first; never expose secret keys with a `NEXT_PUBLIC_` prefix. OpenAI credits are required for AI product search and chat; the catalogue, basket, and order request are separate from the AI chat.
+
 ## Getting Started
 
 First, run the development server:
